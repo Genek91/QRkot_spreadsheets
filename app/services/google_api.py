@@ -16,15 +16,15 @@ async def spreadsheets_create(wrapper_services: Aiogoogle) -> str:
         'properties': {
             'title': f'Отчёт от {now_date_time}',
             'locale': 'ru_RU'
-            },
+        },
         'sheets': [{
             'properties': {
                 'sheetType': 'GRID',
                 'sheetId': 0,
                 'title': 'Лист1',
                 'gridProperties': {'rowCount': 100, 'columnCount': 10}
-                }
-            }]
+            }
+        }]
     }
 
     response = await wrapper_services.as_service_account(
@@ -50,7 +50,7 @@ async def set_user_permissions(
             fileId=spreadsheetid,
             json=permissions_body,
             fields="id"
-            )
+        )
     )
 
 

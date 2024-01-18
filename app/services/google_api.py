@@ -6,10 +6,9 @@ from app.core.config import settings
 from app.models.charity_project import CharityProject
 
 FORMAT = "%Y/%m/%d %H:%M:%S"
-NOW_DATE_TIME = datetime.now().strftime(FORMAT)
 SPREADSHEETS_BODY = {
     'properties': {
-        'title': f'Отчёт от {NOW_DATE_TIME}',
+        'title': '',
         'locale': 'ru_RU'
     },
     'sheets': [{
@@ -27,7 +26,7 @@ PERMISSIONS_BODY = {
     'emailAddress': settings.email
 }
 TABLE_VALUES = [
-    ['Отчёт от', NOW_DATE_TIME],
+    ['Отчёт от', ''],
     ['Топ проектов по скорости закрытия'],
     ['Название проекта', 'Время сбора', 'Описание']
 ]
@@ -37,9 +36,13 @@ UPDATE_BODY = {
 }
 
 
-async def spreadsheets_create(wrapper_services: Aiogoogle) -> str:
-    service = await wrapper_services.discover('sheets', 'v4')
+async def spreadsheets_create(
+    current_time: datetime,
+    wrapper_services: Aiogoogle
+) -> str:
+    SPREADSHEETS_BODY['properties']['title'] = f'Отчёт от {current_time}'
 
+    service = await wrapper_services.discover('sheets', 'v4')
     response = await wrapper_services.as_service_account(
         service.spreadsheets.create(json=SPREADSHEETS_BODY)
     )
@@ -64,8 +67,11 @@ async def set_user_permissions(
 async def spreadsheets_update_value(
     spreadsheet_id: str,
     projects: list[CharityProject],
+    current_time: datetime,
     wrapper_services: Aiogoogle
 ) -> None:
+    TABLE_VALUES[0][1] = current_time
+
     service = await wrapper_services.discover('sheets', 'v4')
 
     for project in projects:

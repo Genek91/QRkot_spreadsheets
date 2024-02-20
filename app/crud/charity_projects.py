@@ -19,7 +19,6 @@ class CRUDCharityProject(CRUDBase):
             )
         )
         db_project_id = db_project_id.scalars().first()
-
         return db_project_id
 
     async def get_projects_by_completion_rate(

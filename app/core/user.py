@@ -54,6 +54,28 @@ class UserManager(IntegerIDMixin, BaseUserManager[User, int]):
     ):
         logging.info(f'Пользователь {user.email} зарегистрирован.')
 
+    # Вариант быстрого добавления возможности деативироватся пользователям
+    # from app.schemas.user import UserUpdate
+
+    # async def update(
+    #     self,
+    #     user_update: UserUpdate,
+    #     user: User,
+    #     safe: bool = False,
+    #     request: Optional[Request] = None
+    # ) -> User:
+    #     if user.is_superuser:
+    #         safe = False
+    #     else:
+    #         if user_update.is_active is False:
+    #             safe = False
+    #             user_update.is_superuser = user.is_superuser
+    #             user_update.is_verified = user.is_verified
+
+    #     updated_user = await super().update(user_update, user, safe, request)
+
+    #     return updated_user
+
 
 async def get_user_manager(user_db=Depends(get_user_db)):
     yield UserManager(user_db)
